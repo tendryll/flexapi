@@ -1,1 +1,1 @@
-"""SQLAlchemy ORM models."""
+"""Pydantic request/response models."""

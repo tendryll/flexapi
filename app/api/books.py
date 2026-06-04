@@ -5,7 +5,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, status
 
 from ..config.database import SessionDep
-from ..schemas import BookCreate, BookResponse, BookUpdate
+from ..model.models import BookCreate, BookResponse, BookUpdate
 from ..service import service
 
 router = APIRouter(prefix="/book", tags=["books"])
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/book", tags=["books"])
 
 @router.post("", response_model=BookResponse, status_code=status.HTTP_201_CREATED)
 async def create_book(payload: BookCreate, session: SessionDep) -> BookResponse:
-    return await service.creatShoue_book(session, payload)
+    return await service.create_book(session, payload)
 
 
 @router.get("/{book_id}", response_model=BookResponse)

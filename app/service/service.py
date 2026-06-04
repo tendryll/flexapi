@@ -1,7 +1,7 @@
 """Business logic for book operations.
 
 Sits between the API layer (``app.api``) and the persistence layer
-(``app.crud``): it turns ORM rows into response models and raises domain
+(``app.repository``): it turns ORM rows into response models and raises domain
 exceptions for not-found conditions, keeping HTTP concerns out of this layer.
 """
 
@@ -9,10 +9,10 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .. import crud
-from ..crud import InvalidLocationError, LocationNotFoundError
-from ..model.models import Book
-from ..schemas import AddressOut, BookCreate, BookResponse, BookUpdate
+from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate
+from ..repository import book_repository
+from ..repository.book_repository import InvalidLocationError, LocationNotFoundError
+from ..repository.entity.models import Book
 
 __all__ = [
     "BookNotFoundError",
@@ -50,12 +50,12 @@ def _serialize(book: Book) -> BookResponse:
 
 
 async def create_book(session: AsyncSession, payload: BookCreate) -> BookResponse:
-    book = await crud.create_book(session, payload)
+    book = await book_repository.create_book(session, payload)
     return _serialize(book)
 
 
 async def get_book(session: AsyncSession, book_id: uuid.UUID) -> BookResponse:
-    book = await crud.get_book(session, book_id)
+    book = await book_repository.get_book(session, book_id)
     if book is None:
         raise BookNotFoundError(book_id)
     return _serialize(book)
@@ -64,13 +64,13 @@ async def get_book(session: AsyncSession, book_id: uuid.UUID) -> BookResponse:
 async def update_book(
     session: AsyncSession, book_id: uuid.UUID, payload: BookUpdate
 ) -> BookResponse:
-    book = await crud.update_book(session, book_id, payload)
+    book = await book_repository.update_book(session, book_id, payload)
     if book is None:
         raise BookNotFoundError(book_id)
     return _serialize(book)
 
 
 async def delete_book(session: AsyncSession, book_id: uuid.UUID) -> None:
-    deleted = await crud.delete_book(session, book_id)
+    deleted = await book_repository.delete_book(session, book_id)
     if not deleted:
         raise BookNotFoundError(book_id)

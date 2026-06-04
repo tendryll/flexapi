@@ -5,8 +5,8 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .model.models import Author, Book, BookAuthor, Location
-from .schemas import BookCreate, BookUpdate
+from ..model.models import BookCreate, BookUpdate
+from .entity.models import Author, Book, BookAuthor, Location
 
 
 class InvalidLocationError(Exception):

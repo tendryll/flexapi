@@ -21,21 +21,23 @@ Interactive docs are served at `/docs` once running.
 
 ```
 app/
-├── api/        # HTTP layer (FastAPI routers)
+├── api/                    # HTTP layer (FastAPI routers)
 │   └── books.py
-├── service/    # business logic
+├── service/                # business logic
 │   └── service.py
-├── crud.py     # data access / persistence
-├── model/      # SQLAlchemy ORM models
+├── repository/             # persistence layer
+│   ├── book_repository.py  # data access / queries
+│   └── entity/             # SQLAlchemy ORM entities
+│       └── models.py
+├── model/                  # Pydantic request/response models
 │   └── models.py
-├── config/     # settings + database engine/session
+├── config/                 # settings + database engine/session
 │   ├── config.py
 │   └── database.py
-├── schemas.py  # Pydantic request/response models
-└── main.py     # app entry point
+└── main.py                 # app entry point
 ```
 
-Request flow: `api` → `service` → `crud` → `model`.
+Request flow: `api` → `service` → `repository` → `entity`.
 
 ## Setup
 
