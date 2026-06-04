@@ -8,8 +8,27 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
-      - pgdata:/var/lib/postgresql/data
+      # Postgres 18+ images store data in /var/lib/postgresql/<major>/docker,
+      # so the volume is mounted one level up (not the pre-18 .../data path).
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  flyway:
+    image: flyway/flyway:11
+    depends_on:
+      db:
+        condition: service_healthy
+    command: -connectRetries=10 migrate
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/library
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+    volumes:
+      - ./flyway/sql:/flyway/sql:ro
 
 volumes:
   pgdata:

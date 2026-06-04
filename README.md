@@ -44,12 +44,23 @@ Request flow: `api` → `service` → `repository` → `entity`.
 ```bash
 uv sync                       # create venv + install deps
 cp .env.example .env          # configure DATABASE_URL
-docker compose up -d db       # Postgres 18 with schema auto-loaded
+docker compose up db flyway   # Postgres 18 + Flyway runs the migrations
 uv run uvicorn app.main:app --reload
 ```
 
-The schema is in [`sql/schema.sql`](sql/schema.sql) and is loaded automatically
-by the Compose Postgres container on first start.
+The database schema and seed data are managed by [Flyway](https://flyway.org/).
+Migrations live in [`flyway/sql/`](flyway/sql/):
+
+| Script                       | Purpose                                  |
+| ---------------------------- | ---------------------------------------- |
+| `V1__create_tables.sql`      | Creates the `author`/`location`/`book`/`book_author` tables |
+| `V2__insert_mock_data.sql`   | Seeds mock authors, locations and books  |
+
+The `flyway` Compose service waits for Postgres to become healthy, applies any
+outstanding migrations, then exits. Re-running `docker compose up flyway` is
+safe — Flyway only applies versions not already recorded in
+`flyway_schema_history`. [`sql/schema.sql`](sql/schema.sql) is retained as a
+plain-SQL reference copy of the DDL.
 
 ## Tooling
 
