@@ -58,7 +58,6 @@ async def create_book(session: AsyncSession, data: BookCreate) -> Book:
     book = Book(
         title=data.title,
         description=data.description,
-        author_id=authors[0].id,
         isbn_10=data.isbn_10,
         isbn_13=data.isbn_13,
         publisher=data.publisher,

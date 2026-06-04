@@ -41,9 +41,7 @@ class Book(Base):
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid7)
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
-    # Mirrors the DDL: book.author_id is NOT NULL. It is set to the first author;
     # the full author list lives in the book_author junction table.
-    author_id: Mapped[uuid.UUID] = mapped_column(Uuid, nullable=False)
     isbn_10: Mapped[str | None] = mapped_column(Text)
     isbn_13: Mapped[str | None] = mapped_column(Text)
     publisher: Mapped[str] = mapped_column(Text, nullable=False)

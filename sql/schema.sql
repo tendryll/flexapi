@@ -22,7 +22,6 @@ CREATE TABLE book (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     title text NOT NULL,
     description text NOT NULL,
-    author_id UUID NOT NULL,
     isbn_10 text,
     isbn_13 text,
     publisher text NOT NULL,
