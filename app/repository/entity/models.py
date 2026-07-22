@@ -1,66 +1,66 @@
-"""SQLAlchemy ORM models mapping the library schema.
+"""SQLModel table models mapping the library schema.
 
 Note on column names: the DDL declares some columns with unquoted mixed case
 (``postalCode``, ``publishingDate``). PostgreSQL folds unquoted identifiers to
 lower case, so the real column names are ``postalcode`` / ``publishingdate``.
-Those are mapped explicitly below.
+Those are mapped explicitly below via ``sa_column``.
 """
 
 import uuid
 from datetime import date
 
-from sqlalchemy import Boolean, Date, ForeignKey, Integer, Text, Uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, Date, Text
+from sqlmodel import Field, Relationship, SQLModel
 from uuid_utils.compat import uuid7
 
-from ...config.database import Base
 
-
-class Author(Base):
+class Author(SQLModel, table=True):
     __tablename__ = "author"
 
-    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid7)
-    author: Mapped[str] = mapped_column(Text, nullable=False)
+    id: uuid.UUID = Field(default_factory=uuid7, primary_key=True)
+    author: str
 
 
-class Location(Base):
+class Location(SQLModel, table=True):
     __tablename__ = "location"
 
-    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid7)
-    address1: Mapped[str] = mapped_column(Text, nullable=False)
-    address2: Mapped[str | None] = mapped_column(Text)
-    city: Mapped[str] = mapped_column(Text, nullable=False)
-    province: Mapped[str] = mapped_column(Text, nullable=False)
-    country: Mapped[str] = mapped_column(Text, nullable=False)
-    postal_code: Mapped[str | None] = mapped_column("postalcode", Text)
+    id: uuid.UUID = Field(default_factory=uuid7, primary_key=True)
+    address1: str
+    address2: str | None = None
+    city: str
+    province: str
+    country: str
+    postal_code: str | None = Field(default=None, sa_column=Column("postalcode", Text))
 
 
-class Book(Base):
+class Book(SQLModel, table=True):
     __tablename__ = "book"
 
-    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid7)
-    title: Mapped[str] = mapped_column(Text, nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
+    id: uuid.UUID = Field(default_factory=uuid7, primary_key=True)
+    title: str
+    description: str
     # the full author list lives in the book_author junction table.
-    isbn_10: Mapped[str | None] = mapped_column(Text)
-    isbn_13: Mapped[str | None] = mapped_column(Text)
-    publisher: Mapped[str] = mapped_column(Text, nullable=False)
-    publishing_date: Mapped[date] = mapped_column("publishingdate", Date, nullable=False)
-    page_count: Mapped[int] = mapped_column(Integer, nullable=False)
-    location_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("location.id"))
-    availability: Mapped[bool | None] = mapped_column(Boolean, default=False)
+    isbn_10: str | None = None
+    isbn_13: str | None = None
+    publisher: str
+    publishing_date: date = Field(sa_column=Column("publishingdate", Date, nullable=False))
+    page_count: int
+    location_id: uuid.UUID | None = Field(default=None, foreign_key="location.id")
+    availability: bool | None = False
 
-    location: Mapped[Location | None] = relationship(lazy="selectin")
-    authors: Mapped[list[Author]] = relationship(
-        secondary="book_author",
-        lazy="selectin",
-        order_by="Author.author",
+    location: Location | None = Relationship(sa_relationship_kwargs={"lazy": "selectin"})
+    authors: list[Author] = Relationship(
+        sa_relationship_kwargs={
+            "secondary": "book_author",
+            "lazy": "selectin",
+            "order_by": "Author.author",
+        },
     )
 
 
-class BookAuthor(Base):
+class BookAuthor(SQLModel, table=True):
     __tablename__ = "book_author"
 
-    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid7)
-    author_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("author.id"), nullable=False)
-    book_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("book.id"), nullable=False)
+    id: uuid.UUID = Field(default_factory=uuid7, primary_key=True)
+    author_id: uuid.UUID = Field(foreign_key="author.id")
+    book_id: uuid.UUID = Field(foreign_key="book.id")

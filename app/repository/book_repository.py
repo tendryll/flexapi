@@ -2,8 +2,8 @@
 
 import uuid
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from ..model.models import BookCreate, BookUpdate
 from .entity.models import Author, Book, BookAuthor, Location
@@ -18,8 +18,8 @@ class LocationNotFoundError(Exception):
 
 
 async def _get_or_create_author(session: AsyncSession, name: str) -> Author:
-    result = await session.execute(select(Author).where(Author.author == name))
-    author = result.scalar_one_or_none()
+    result = await session.exec(select(Author).where(Author.author == name))
+    author = result.one_or_none()
     if author is None:
         author = Author(author=name)
         session.add(author)
@@ -28,8 +28,8 @@ async def _get_or_create_author(session: AsyncSession, name: str) -> Author:
 
 
 async def get_book(session: AsyncSession, book_id: uuid.UUID) -> Book | None:
-    result = await session.execute(select(Book).where(Book.id == book_id))
-    return result.scalar_one_or_none()
+    result = await session.exec(select(Book).where(Book.id == book_id))
+    return result.one_or_none()
 
 
 async def create_book(session: AsyncSession, data: BookCreate) -> Book:

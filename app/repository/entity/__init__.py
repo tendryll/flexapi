@@ -1,1 +1,1 @@
-"""SQLAlchemy ORM models."""
+"""SQLModel table models."""

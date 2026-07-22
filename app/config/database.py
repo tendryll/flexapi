@@ -1,25 +1,16 @@
-"""Async SQLAlchemy engine, session factory and FastAPI dependency."""
+"""Async SQLModel engine, session factory and FastAPI dependency."""
 
 from collections.abc import AsyncIterator
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from .config import settings
 
-
-class Base(DeclarativeBase):
-    """Declarative base for all ORM models."""
-
-
 engine = create_async_engine(settings.database_url, future=True)
-SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
+SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:

@@ -10,8 +10,10 @@ from collections.abc import AsyncIterator
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.config.database import Base, get_session
+from app.config.database import get_session
 from app.main import app
 
 
@@ -19,9 +21,9 @@ from app.main import app
 async def client() -> AsyncIterator[AsyncClient]:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
 
-    test_session = async_sessionmaker(engine, expire_on_commit=False)
+    test_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async def override_get_session() -> AsyncIterator:
         async with test_session() as session:

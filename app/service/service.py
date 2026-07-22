@@ -7,7 +7,7 @@ exceptions for not-found conditions, keeping HTTP concerns out of this layer.
 
 import uuid
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate
 from ..repository import book_repository
