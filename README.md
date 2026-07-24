@@ -20,7 +20,7 @@ Interactive docs are served at `/docs` once running.
 ## Layout
 
 ```
-app/
+src/app/
 ├── api/                    # HTTP layer (FastAPI routers)
 │   └── books.py
 ├── service/                # business logic
@@ -45,7 +45,7 @@ Request flow: `api` → `service` → `repository` → `entity`.
 uv sync                       # create venv + install deps
 cp .env.example .env          # configure DATABASE_URL
 docker compose up db flyway   # Postgres 18 + Flyway runs the migrations
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload --app-dir src
 ```
 
 The database schema and seed data are managed by [Flyway](https://flyway.org/).

@@ -11,10 +11,11 @@ import sys
 import uuid
 from datetime import date
 
-# Make the project root (two levels up from tests/integration/) importable as
-# ``app`` even when the package is not installed (pyproject sets package = false).
+# Make the project's ``src`` directory (two levels up from tests/integration/,
+# then into src/) importable as ``app`` even when the package is not installed
+# (pyproject sets package = false).
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, _PROJECT_ROOT)
+sys.path.insert(0, os.path.join(_PROJECT_ROOT, "src"))
 
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine  # noqa: E402
