@@ -12,5 +12,8 @@
       "Bash(.venv/bin/python -c ' *)",
       "Bash(.venv/bin/python *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "pycharm"
+  ]
 }
