@@ -3,7 +3,14 @@
     "allow": [
       "Bash(uv --version)",
       "Bash(uv sync *)",
-      "Bash(uv run *)"
+      "Bash(uv run *)",
+      "Bash(.venv/bin/python -m behave tests/integration/books.feature)",
+      "Bash(.venv/bin/pip show *)",
+      "Bash(.venv/bin/python -c \"import pydantic, pydantic_core; print\\('pydantic', pydantic.VERSION\\); print\\('pydantic_core', pydantic_core.VERSION\\)\")",
+      "Read(//Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/**)",
+      "Bash(/Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12 -c \"import pydantic; print\\('framework pydantic', pydantic.VERSION\\)\")",
+      "Bash(.venv/bin/python -c ' *)",
+      "Bash(.venv/bin/python *)"
     ]
   }
 }
