@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "body": [
+    "jsonBody": [
       {
         "address": "188 Arthur Wright Crescent",
         "city": "Winnipeg",
