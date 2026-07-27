@@ -1,7 +1,7 @@
 """Business logic for book operations.
 
-Sits between the API layer (``app.api``) and the persistence layer
-(``app.repository``): it turns ORM rows into response models and raises domain
+Sits between the API layer (``app.routes``) and the persistence layer
+(``app.data``): it turns ORM rows into response models and raises domain
 exceptions for not-found conditions, keeping HTTP concerns out of this layer.
 """
 
@@ -10,9 +10,9 @@ import uuid
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate
-from ..repository import book_repository
-from ..repository.book_repository import InvalidLocationError, LocationNotFoundError
-from ..repository.entity.models import Book
+from ..data import book_repository
+from ..data.book_repository import InvalidLocationError, LocationNotFoundError
+from ..data.entity.models import Book
 
 __all__ = [
     "BookNotFoundError",

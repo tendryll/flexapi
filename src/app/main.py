@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from .api import books
+from .routes import books
 
 app = FastAPI(title="Library API", version="0.1.0")
 app.include_router(books.router)

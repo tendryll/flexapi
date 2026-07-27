@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/location"
+  },
+  "response": {
+    "status": 200,
+    "body": [
+      {
+        "address": "188 Arthur Wright Crescent",
+        "city": "Winnipeg",
+        "province": "Manitoba",
+        "country": "Canada",
+        "latitude": 49.9496113,
+        "longitude": -97.1886405
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
