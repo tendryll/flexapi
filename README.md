@@ -37,7 +37,7 @@ src/app/
 └── main.py                 # app entry point
 ```
 
-Request flow: `api` → `service` → `repository` → `entity`.
+Request flow: `api` → `service` → `data` → `entity`.
 
 ## Setup
 
@@ -49,7 +49,7 @@ uv run uvicorn app.main:app --reload --app-dir src
 ```
 
 The database schema and seed data are managed by [Flyway](https://flyway.org/).
-Migrations live in [`flyway/sql/`](flyway/sql/):
+Migrations live in [`data/flyway/sql/`](data/flyway/sql/):
 
 | Script                       | Purpose                                  |
 | ---------------------------- | ---------------------------------------- |

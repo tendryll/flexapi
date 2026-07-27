@@ -24,7 +24,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession  # noqa: E402
 
 from app.config.database import get_session  # noqa: E402
 from app.main import app  # noqa: E402
-from app.repository.entity.models import Book  # noqa: E402
+from app.data.entity.models import Book  # noqa: E402
 
 # A known book seeded into every scenario's database so the retrieve/update/
 # delete scenarios can reference a stable id (see tests/integration/books.feature).
