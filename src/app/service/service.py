@@ -4,18 +4,15 @@ Sits between the API layer (``app.routes``) and the persistence layer
 (``app.data``): it turns ORM rows into response models and raises domain
 exceptions for not-found conditions, keeping HTTP concerns out of this layer.
 """
-import app.data.external.location_api
-
 import uuid
 
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-
 from ..data import book_repository
 from ..data.book_repository import InvalidLocationError, LocationNotFoundError
 from ..data.entity.models import Book
+from ..data.external.location_api import get_locations
 from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate, CoordinateResponse
-from app.data.external.location_api import get_locations
 
 __all__ = [
     "BookNotFoundError",
