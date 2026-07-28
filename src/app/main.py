@@ -2,10 +2,11 @@
 
 from fastapi import FastAPI
 
-from .routes import books
+from .routes import book, location
 
 app = FastAPI(title="Library API", version="0.1.0")
-app.include_router(books.router)
+app.include_router(book.router)
+app.include_router(location.router)
 
 
 @app.get("/health", tags=["meta"])

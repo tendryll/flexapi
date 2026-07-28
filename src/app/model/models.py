@@ -88,3 +88,22 @@ class BookResponse(BaseModel):
     page_count: int = Field(alias="pageCount")
     location: AddressOut | None = None
     availability: bool | None = None
+
+
+class LocationResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: int
+    address: str
+    city: str
+    province: str
+    country: str
+    latitude: float
+    longitude: float
+
+class CoordinateResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: int
+    latitude: float
+    longitude: float

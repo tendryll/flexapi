@@ -4,15 +4,18 @@ Sits between the API layer (``app.routes``) and the persistence layer
 (``app.data``): it turns ORM rows into response models and raises domain
 exceptions for not-found conditions, keeping HTTP concerns out of this layer.
 """
+import app.data.external.location_api
 
 import uuid
 
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate
+
 from ..data import book_repository
 from ..data.book_repository import InvalidLocationError, LocationNotFoundError
 from ..data.entity.models import Book
+from ..model.models import AddressOut, BookCreate, BookResponse, BookUpdate, CoordinateResponse
+from app.data.external.location_api import get_locations
 
 __all__ = [
     "BookNotFoundError",
@@ -22,6 +25,7 @@ __all__ = [
     "delete_book",
     "get_book",
     "update_book",
+    "get_coordinates",
 ]
 
 
@@ -62,7 +66,7 @@ async def get_book(session: AsyncSession, book_id: uuid.UUID) -> BookResponse:
 
 
 async def update_book(
-    session: AsyncSession, book_id: uuid.UUID, payload: BookUpdate
+        session: AsyncSession, book_id: uuid.UUID, payload: BookUpdate
 ) -> BookResponse:
     book = await book_repository.update_book(session, book_id, payload)
     if book is None:
@@ -74,3 +78,15 @@ async def delete_book(session: AsyncSession, book_id: uuid.UUID) -> None:
     deleted = await book_repository.delete_book(session, book_id)
     if not deleted:
         raise BookNotFoundError(book_id)
+
+
+async def get_coordinates() -> list[CoordinateResponse]:
+    locations = get_locations()
+    coordinates = []
+
+    for location in locations:
+        coordinates.append(CoordinateResponse(id=location.id,
+                                              latitude=location.latitude,
+                                              longitude=location.longitude))
+
+    return coordinates

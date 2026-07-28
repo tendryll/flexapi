@@ -13,6 +13,7 @@ dependencies = [
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
     "uuid-utils>=0.10",
+    "requests>=2.34.2",
 ]
 
 [dependency-groups]

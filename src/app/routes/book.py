@@ -8,7 +8,7 @@ from ..config.database import SessionDep
 from ..model.models import BookCreate, BookResponse, BookUpdate
 from ..service import service
 
-router = APIRouter(prefix="/book", tags=["books"])
+router = APIRouter(prefix="/book", tags=["book"])
 
 
 @router.post("", response_model=BookResponse, status_code=status.HTTP_201_CREATED)
