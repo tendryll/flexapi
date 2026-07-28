@@ -11,4 +11,5 @@ app.include_router(location.router)
 
 @app.get("/health", tags=["meta"])
 async def health() -> dict[str, str]:
+    """Report that the service is up (no dependency checks)."""
     return {"status": "ok"}

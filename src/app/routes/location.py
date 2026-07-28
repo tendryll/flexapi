@@ -9,6 +9,7 @@ router = APIRouter(prefix="/location", tags=["location"])
 
 @router.get(path="/coordinate", status_code=status.HTTP_200_OK)
 async def get_coordinates() -> list[CoordinateResponse]:
+    """Return the coordinates of every known location, or 500 on any failure."""
     try:
         return await service.get_coordinates()
     except Exception as e:

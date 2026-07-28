@@ -31,6 +31,7 @@ class BookNotFoundError(Exception):
 
 
 def _serialize(book: Book) -> BookResponse:
+    """Convert a ``Book`` ORM row into its API response model."""
     # Built via model_validate (populate_by_name) so snake_case attribute names
     # map onto the alias-bearing response fields.
     return BookResponse.model_validate(
@@ -51,11 +52,13 @@ def _serialize(book: Book) -> BookResponse:
 
 
 async def create_book(session: AsyncSession, payload: BookCreate) -> BookResponse:
+    """Persist a new book and return its response representation."""
     book = await book_repository.create_book(session, payload)
     return _serialize(book)
 
 
 async def get_book(session: AsyncSession, book_id: uuid.UUID) -> BookResponse:
+    """Return one book, raising ``BookNotFoundError`` if it does not exist."""
     book = await book_repository.get_book(session, book_id)
     if book is None:
         raise BookNotFoundError(book_id)
@@ -65,6 +68,11 @@ async def get_book(session: AsyncSession, book_id: uuid.UUID) -> BookResponse:
 async def update_book(
         session: AsyncSession, book_id: uuid.UUID, payload: BookUpdate
 ) -> BookResponse:
+    """Apply a partial update to a book and return the updated representation.
+
+    Raises ``BookNotFoundError`` if the book is missing; the repository raises
+    ``InvalidLocationError`` / ``LocationNotFoundError`` for a bad location.
+    """
     book = await book_repository.update_book(session, book_id, payload)
     if book is None:
         raise BookNotFoundError(book_id)
@@ -72,12 +80,14 @@ async def update_book(
 
 
 async def delete_book(session: AsyncSession, book_id: uuid.UUID) -> None:
+    """Delete a book, raising ``BookNotFoundError`` if it does not exist."""
     deleted = await book_repository.delete_book(session, book_id)
     if not deleted:
         raise BookNotFoundError(book_id)
 
 
 async def get_coordinates() -> list[CoordinateResponse]:
+    """Reduce the upstream locations to just their id and coordinates."""
     locations = get_locations()
     coordinates = []
 

@@ -18,6 +18,10 @@ class LocationNotFoundError(Exception):
 
 
 async def _get_or_create_author(session: AsyncSession, name: str) -> Author:
+    """Return the author row for ``name``, inserting it if absent.
+
+    Flushes after an insert so the caller can rely on the generated id.
+    """
     result = await session.exec(select(Author).where(Author.author == name))
     author = result.one_or_none()
     if author is None:
@@ -28,11 +32,17 @@ async def _get_or_create_author(session: AsyncSession, name: str) -> Author:
 
 
 async def get_book(session: AsyncSession, book_id: uuid.UUID) -> Book | None:
+    """Load a book by id, or ``None`` if no row matches."""
     result = await session.exec(select(Book).where(Book.id == book_id))
     return result.one_or_none()
 
 
 async def create_book(session: AsyncSession, data: BookCreate) -> Book:
+    """Insert a book together with its authors and optional location.
+
+    Commits the transaction and returns the row re-loaded through ``get_book``
+    so relationships are populated.
+    """
     # Deduplicate while preserving order; reuse existing author rows by name.
     authors: list[Author] = []
     seen: set[str] = set()
@@ -79,6 +89,12 @@ async def create_book(session: AsyncSession, data: BookCreate) -> Book:
 
 
 async def update_book(session: AsyncSession, book_id: uuid.UUID, data: BookUpdate) -> Book | None:
+    """Apply the set fields of ``data`` to a book and commit.
+
+    Returns ``None`` when the book does not exist. Raises
+    ``InvalidLocationError`` if the location is not a well-formed UUID and
+    ``LocationNotFoundError`` if it does not reference an existing row.
+    """
     book = await get_book(session, book_id)
     if book is None:
         return None
@@ -107,6 +123,7 @@ async def update_book(session: AsyncSession, book_id: uuid.UUID, data: BookUpdat
 
 
 async def delete_book(session: AsyncSession, book_id: uuid.UUID) -> bool:
+    """Delete a book, returning whether a row was actually removed."""
     # Load via get_book so the authors collection is populated; deleting the
     # book then lets SQLAlchemy remove the book_author association rows.
     book = await get_book(session, book_id)

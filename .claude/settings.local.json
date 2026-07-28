@@ -10,7 +10,9 @@
       "Read(//Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/**)",
       "Bash(/Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12 -c \"import pydantic; print\\('framework pydantic', pydantic.VERSION\\)\")",
       "Bash(.venv/bin/python -c ' *)",
-      "Bash(.venv/bin/python *)"
+      "Bash(.venv/bin/python *)",
+      "Bash(python -m compileall -q src/app)",
+      "Bash(LOCATIONS_URL=\"http://localhost:8080/locations\" timeout 240 uv run pytest tests/unit -q)"
     ]
   },
   "enabledMcpjsonServers": [

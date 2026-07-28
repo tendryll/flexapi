@@ -13,11 +13,13 @@ router = APIRouter(prefix="/book", tags=["book"])
 
 @router.post("", response_model=BookResponse, status_code=status.HTTP_201_CREATED)
 async def create_book(payload: BookCreate, session: SessionDep) -> BookResponse:
+    """Create a book and return it with its generated id."""
     return await service.create_book(session, payload)
 
 
 @router.get("/{book_id}", response_model=BookResponse)
 async def get_book(book_id: uuid.UUID, session: SessionDep) -> BookResponse:
+    """Return a single book, or 404 if no book has that id."""
     try:
         return await service.get_book(session, book_id)
     except service.BookNotFoundError as exc:
@@ -26,6 +28,11 @@ async def get_book(book_id: uuid.UUID, session: SessionDep) -> BookResponse:
 
 @router.put("/{book_id}", response_model=BookResponse)
 async def update_book(book_id: uuid.UUID, payload: BookUpdate, session: SessionDep) -> BookResponse:
+    """Patch a book's availability and/or location.
+
+    Returns 422 for a malformed location UUID and 404 when either the book or
+    the referenced location does not exist.
+    """
     try:
         return await service.update_book(session, book_id, payload)
     except service.InvalidLocationError as exc:
@@ -38,6 +45,7 @@ async def update_book(book_id: uuid.UUID, payload: BookUpdate, session: SessionD
 
 @router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: uuid.UUID, session: SessionDep) -> None:
+    """Delete a book, or 404 if no book has that id."""
     try:
         await service.delete_book(session, book_id)
     except service.BookNotFoundError as exc:

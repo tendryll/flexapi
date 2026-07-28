@@ -55,6 +55,7 @@ class BookCreate(BaseModel):
     @field_validator("authors")
     @classmethod
     def _authors_unique(cls, value: list[str]) -> list[str]:
+        """Reject payloads that repeat an author name."""
         if len(set(value)) != len(value):
             raise ValueError("authors must be unique")
         return value
